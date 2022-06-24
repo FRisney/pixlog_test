@@ -71,21 +71,25 @@ class _ListScreenState extends State<ListScreen> {
                     ],
                   ),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    surfaceTintColor: Colors.grey,
-                    elevation: 5,
-                    primary: Colors.blue,
-                  ),
-                  onPressed: () => read.add(FilterLocales()),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 25),
-                    child: Text(
-                      'Filtrar',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: Colors.white,
-                          ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      surfaceTintColor: Colors.grey,
+                      elevation: 5,
+                      primary: Colors.blue,
+                    ),
+                    onPressed: () => read.add(FilterLocales()),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 25),
+                      child: Text(
+                        'Filtrar',
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: Colors.white,
+                                ),
+                      ),
                     ),
                   ),
                 ),
