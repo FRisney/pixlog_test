@@ -1,4 +1,9 @@
+import 'dart:convert';
 import 'dart:developer' as dev;
+
+import 'package:http/http.dart' as http;
+import 'package:localstorage/localstorage.dart';
+
 import '../models/locale.dart';
 
 abstract class LocaleRepository {
@@ -6,10 +11,45 @@ abstract class LocaleRepository {
 }
 
 class ProductionLocaleRepository implements LocaleRepository {
+  final LocalStorage storage = LocalStorage('cached_locales');
   @override
   Future<List<Locale>> getAll() async {
-    // TODO: implement getAll in ProductionLocaleRepository
-    throw UnimplementedError();
+    late List data;
+    await storage.ready;
+    var dateCached = storage.getItem('timestamp');
+    if (dateCached == null) {
+      data = await _getFromApi();
+    } else if (DateTime.fromMillisecondsSinceEpoch(dateCached)
+            .difference(DateTime.now())
+            .inMinutes >
+        5) {
+      data = await _getFromApi();
+    } else {
+      data = storage.getItem('data');
+    }
+    return data.map((e) {
+      if (e['updated_at'] == null) {
+        e['updated_at'] = '1970-01-01T00:00:01Z';
+      }
+      if (e['created_at'] == null) {
+        e['created_at'] = '1970-01-01T00:00:01Z';
+      }
+      return Locale.fromJson(e);
+    }).toList();
+  }
+
+  Future<List> _getFromApi() async {
+    List list = [];
+    var resp = await http.get(
+      Uri.parse('http://portal.greenmilesoftware.com/get_resources_since'),
+    );
+    if (resp.statusCode == 200) {
+      var decoded = jsonDecode(resp.body);
+      list = decoded.map((e) => e['resource']).toList();
+      storage.setItem('timestamp', DateTime.now().millisecondsSinceEpoch);
+      storage.setItem('data', list);
+    }
+    return list;
   }
 }
 
