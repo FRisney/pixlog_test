@@ -47,38 +47,72 @@ class _ListScreenState extends State<ListScreen> {
               },
             ),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextField(
-                      onChanged: (languageId) =>
-                          read.add(SetLanguageIdFilter(languageId)),
-                    ),
-                    TextField(
-                      onChanged: (moduleId) {
-                        return read.add(SetByModuleIdFilter(moduleId));
-                      },
-                    ),
-                    TextField(
-                      onChanged: (value) => read.add(SetValueFilter(value)),
-                    ),
-                  ],
+          Card(
+            elevation: 15,
+            surfaceTintColor: Colors.grey,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      filterField(
+                          (languageId) =>
+                              read.add(SetLanguageIdFilter(languageId)),
+                          'LanguageId Filter'),
+                      filterField(
+                          (moduleId) => read.add(SetByModuleIdFilter(moduleId)),
+                          'ModuleId Filter'),
+                      filterField((value) => read.add(SetValueFilter(value)),
+                          'Value Filter'),
+                    ],
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    read.add(FilterLocales());
-                  },
-                  child: const Text('Filtrar')),
-            ],
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    surfaceTintColor: Colors.grey,
+                    elevation: 5,
+                    primary: Colors.blue,
+                  ),
+                  onPressed: () => read.add(FilterLocales()),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 25),
+                    child: Text(
+                      'Filtrar',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget filterField(
+      void Function(String languageId) onChange, String placeholder) {
+    return Container(
+      margin: const EdgeInsets.all(4),
+      child: TextField(
+        decoration: InputDecoration(
+          labelText: placeholder,
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+        ),
+        onChanged: onChange,
       ),
     );
   }
