@@ -1,8 +1,8 @@
-import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+
 import '../bloc/locales_bloc.dart';
+import '../components/locale_card.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({Key? key}) : super(key: key);
@@ -37,18 +37,7 @@ class _ListScreenState extends State<ListScreen> {
                   return ListView.builder(
                     itemCount: state.locales.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final local = state.locales.elementAt(index);
-                      return ListTile(
-                        leading: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(DateFormat('dd/MM/yyyy')
-                                .format(local.updatedAt)),
-                            Text(local.resourceId),
-                          ],
-                        ),
-                        title: Text(local.value),
-                      );
+                      return LocaleCard(locale: state.locales.elementAt(index));
                     },
                   );
                 }
